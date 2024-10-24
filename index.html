@@ -3,16 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <style>
       body {
         margin: 0;
-				overflow: hidden;
+        overflow: hidden;
       }
       html, body {
         height: 100%;
       }
       canvas {
         display: block;
+      }
+
+      .form {
+        position: fixed;
+        bottom: 100px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+
+        input {
+          width: 209px;
+          height: 8px;
+          border-radius: 4px;
+          outline: none;
+          padding: 16px;
+          border: none;
+        }
+
+        button {
+          background: #111111;
+          white-space: nowrap;
+          font-family: "Roboto", sans-serif;
+          border-radius: 4px;
+          font-weight: 500;
+          font-size: 16px;
+          color: white;
+          text-align: center;
+          vertical-align: center;
+          width: 171px;
+          height: 40px;
+          border: none;
+        }
       }
     </style>
   </head>
@@ -24,6 +60,28 @@
       const app = new Application(canvas);
       app.load('./scene.splinecode');
     </script>
+
+    <script>
+      let isSending = false;
+      const onClick = async function() {
+        if(isSending) return;
+        const email = document.querySelector('input').value;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email))  return;
+
+        isSending = true;
+        fetch(`https://m5qrsigaxj67oicvbjdwim3eum0rarkj.lambda-url.eu-central-1.on.aws/?email=${email}`)
+          .then(response => response.json())
+          .then(data => {
+            isSending = false;
+          });
+      }
+    </script>
+    <div class="form">
+      <input name="email" type="email" placeholder="Your email" />
+      <button  onclick="onClick()">Get launch updates</button>
+    </div>
   </body>
 </html>
   
